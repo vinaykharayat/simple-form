@@ -1,64 +1,107 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Form</title>
-</head>
-<body>
-	<form>
-		<h1>Form demo</h1>
-		<section>
-			<fieldset>
-			<legend>Text input</legend>
-			<br>
-			<label>Text box</label>
-			<input type="text" name="" required="required" value="text here"><br>
-			<br>
-			<label>Password</label>
-			<input type="Password" name="" required="required" value="text here"><br>
-			<br>
-			<label>Text area</label><textarea rows="4" cols="165">Your text here</textarea>
-			<br>
-			<br>
-		</fieldset>
-		</section>
-		<section>
-			<fieldset>
-			<legend>Selecting elements</legend>
-			<br>
-			<label>Select list</label>
-			<select name="dropdown" id="dropdown">
-				<option value="one">one</option>
-				<option value="two">two</option>
-				<option value="three">three</option>
-				<option value="four">four</option>
-			</select>
-			<br>
-			<br>
-			<label>Checkboxes</label>
-			<input type="checkbox" name="Checkboxes">Green eggs
-			<input type="checkbox" name="Checkboxes">Ham<br>
-			<br>
-			<label>Radio buttons</label>
-			<input type="radio" name="Radio" checked="checked">small
-			<input type="radio" name="Radio">medium
-			<input type="radio" name="Radio">large
-			<br>
-			<br>
-		</fieldset>
-		</section>
-		
-		<section>
-			<fieldset>
-			<legend>Buttons</legend>
-			<br>
-			<button type="standard">Standard button</button>
-			<button type="input">Input button</button>
-			<button type="reset">Reset</button>
-			<button type="submit">Submit</button>
-			<br>
-			<br>
-		</fieldset>
-		</section>
-	</form>
-</body>
+    <head>
+        <title>Form</title>
+    </head>
+    <body>
+        <form id="reg">
+            <section>
+                <h1>Registration Form</h1>
+                <fieldset>
+                    <legend>Basic Information</legend>
+                    <br>
+                    <label>Full Name</label>
+                    <input type="text" name="name" required="required" placeholder="Firstname Lastname"><br>
+                    <br>
+                    <label>Username</label>
+                    <input id="username" type="text" name="username" required="required" placeholder="username"><span id="valid">Username valid</span><span id="invalid">Username taken</span><br><br>
+                    <br>
+                    <label>Email</label>
+                    <input type="email" name="email" required="required" placeholder="Email"><br>
+                    <br>
+                    <label>About yourself</label><textarea name="message" rows="4" cols="165" placeholder="I love doing ..."></textarea>
+                    <br>
+                    <br>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Job profile</legend>
+                    <br>
+                    <label>Experience</label>
+                    <select name="dropdown" id="dropdown">
+                        <option value="zero">zero</option>
+                        <option value="one">one</option>
+                        <option value="two">two</option>
+                        <option value="three">three</option>
+                        <option value="four">four</option>
+                    </select>
+                    <span>year(s)</span>
+                    <br>
+                    <br>
+                    <label>Profile</label><br>
+                    <input type="checkbox" name="checkboxes" value="softwareDeveloper">Software developer<br>
+                    <input type="checkbox" name="checkboxes" value="javaProgrammer">Java Programmer<br>
+                    <input type="checkbox" name="checkboxes" value="ai">Artificial Intelligence<br>
+                    <input type="checkbox" name="checkboxes" value="ml">Machine Learning<br>
+                    <br>
+                    <label>Gender</label>
+                    <input type="radio" name="radio" checked="checked" value="male">male
+                    <input type="radio" name="radio" value="female">female
+                    <input type="radio" name="radio" value="other">other
+                    <br>
+                    <br>
+                    <input type="submit" id="submit" value="submit">
+                    <input type="button" value="Reset" id="resetbtn">
+
+                </fieldset>
+            </section>
+        </form>
+        <script src="./scripts/jquery-3.5.1.js"></script>
+
+        <script>
+            $("#resetbtn").on('click', function (e){
+                $('#reg')[0].reset();
+            });
+            $(document).ready(function () {
+                $('#valid').hide();
+                $('#invalid').hide();
+            });
+            $('form').on('click', "#submit" , function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: './validate.php',
+                    data: $("form").serialize(),
+                    success: function () {                      
+                        let r = confirm("User registered successfully, press ok to goto welcome page");
+                        if (r === true) {
+                            window.location.href = "./php/welcome.php";
+                        }
+                    }
+                });
+            });
+            document.getElementById("username").addEventListener("blur", function (e) {
+                $.ajax({
+                    type: 'get',
+                    url: './validate.php',
+                    data: {'username': $('#username').val()},
+                    success: function (response) {
+                        console.log(response);
+                        if (response === "nExist") {
+                            $('#valid').show();
+                            $('#invalid').hide();
+                            document.getElementById('valid').style.color = "green";
+                        } else {
+                            $('#invalid').show();
+                            $('#valid').hide();
+                            document.getElementById('invalid').style.color = "red";
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            });
+        </script>
+    </body>
 </html>
