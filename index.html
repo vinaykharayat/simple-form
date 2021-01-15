@@ -86,6 +86,7 @@
                     type: 'get',
                     url: './validate.php',
                     data: {'username': $('#username').val()},
+                    cache: false,
                     success: function (response) {
                         console.log(response);
                         if (response === "nExist") {
