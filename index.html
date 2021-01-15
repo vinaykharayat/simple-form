@@ -72,6 +72,7 @@
                     type: 'POST',
                     url: './validate.php',
                     data: $("form").serialize(),
+                    cache: false,
                     success: function () {                      
                         let r = confirm("User registered successfully, press ok to goto welcome page");
                         if (r === true) {
